@@ -13,11 +13,22 @@ type DialogProps = {
 const Dialog = ({ title, onClose, onOk, children }: DialogProps) => {
 	const searchParams = useSearchParams();
 	const dialogRef = useRef<null | HTMLDialogElement>(null);
+
+    /**
+     * ! Why using search parameters to show the dialog instead of using a state
+     *  1. users can bookmark or share a link to the open dialog
+     *  2. if a dialog represent a unique location, it probably warrants a unique url. meaning that if you want to open the same page sometime with a dialog and sometimes without
+     *  3. you can use a plain anchor to open the dialog. no button or onClick is required 
+     */
 	const showDialog = searchParams.get("showDialog");
 
 	useEffect(() => {
 		if (showDialog === "y") {
-			dialogRef.current?.show();
+			//? the show method shows a dialog not a modal
+			// dialogRef.current?.show();
+			//? the showModal method shows a modal not a dialog
+            // !the main difference between them that the modal prevents the user from interacting with the page until you close it  
+			dialogRef.current?.showModal();
 		} else {
 			dialogRef.current?.close();
 		}
@@ -36,6 +47,7 @@ const Dialog = ({ title, onClose, onOk, children }: DialogProps) => {
 		showDialog === "y" ? (
 			<dialog
 				ref={dialogRef}
+				// backdrop:bg-gray-800/60 will apply if u use a modal not a dialog
 				className="fixed top-52  left-72 -translate-x-52 -translate-y-52 z-10 rounded-xl backdrop:bg-gray-800/60"
 			>
 				<div className="w-[500px] max-w-full bg-gray-200 flex flex-col ">
